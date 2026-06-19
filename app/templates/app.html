@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Career Tracker{% endblock %}
+{% block body_class %}app-page{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="app-layout">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="logo-icon">🚀</span>
+            <span class="sidebar-title">CareerTracker</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="#" class="nav-item" data-section="habits"><span class="nav-icon">✅</span> Habits</a>
+            <a href="#" class="nav-item" data-section="streaks"><span class="nav-icon">🔥</span> Streaks</a>
+            <a href="#" class="nav-item" data-section="career"><span class="nav-icon">📈</span> Career Progress</a>
+            <a href="#" class="nav-item" data-section="fear"><span class="nav-icon">💪</span> Fear Challenges</a>
+            <a href="#" class="nav-item" data-section="weekly"><span class="nav-icon">📝</span> Weekly Review</a>
+            <a href="#" class="nav-item" data-section="goals"><span class="nav-icon">🎯</span> Monthly Goals</a>
+            <a href="#" class="nav-item" data-section="mood"><span class="nav-icon">😊</span> Mood Tracker</a>
+            <a href="#" class="nav-item" data-section="analytics"><span class="nav-icon">📉</span> Analytics</a>
+            <a href="#" class="nav-item" data-section="plan"><span class="nav-icon">🗓️</span> 30-Day Plan</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('auth.logout') }}" class="nav-item logout"><span class="nav-icon">🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+            <h2 class="page-title" id="pageTitle">Dashboard</h2>
+            <div class="top-bar-actions">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+                <span class="user-greeting" id="userGreeting">Welcome!</span>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <!-- Dashboard Section -->
+            <section id="section-dashboard" class="section active">
+                <div class="quote-banner" id="motivationalQuote"></div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-icon">📅</div>
+                        <div class="stat-card-content">
+                            <span class="stat-label">Today</span>
+                            <span class="stat-value" id="todayDate">--</span>
+                        </div>
+                    </div>
+                    <div class="stat-card highlight">
+                        <div class="stat-card-icon">📊</div>
+                        <div class="stat-card-content">
+                            <span class="stat-label">Overall Progress</span>
+                            <span class="stat-value" id="overallProgress">0%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon">⭐</div>
+                        <div class="stat-card-content">
+                            <span class="stat-label">Daily Score</span>
+                            <span class="stat-value" id="dailyScore">0/100</span>
+                        </div>
+                    </div>
+                    <div class="stat-card streak-card">
+                        <div class="stat-card-icon">🔥</div>
+                        <div class="stat-card-content">
+                            <span class="stat-label">Active Streak</span>
+                            <span class="stat-value" id="currentStreak">0 days</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>Quick Overview</h3>
+                        <div class="progress-ring-container">
+                            <svg class="progress-ring" viewBox="0 0 120 120">
+                                <circle class="progress-ring-bg" cx="60" cy="60" r="52"/>
+                                <circle class="progress-ring-fill" id="dailyRing" cx="60" cy="60" r="52"/>
+                            </svg>
+                            <div class="progress-ring-text">
+                                <span id="dailyRingValue">0</span>
+                                <small>Daily Score</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Streak Badge</h3>
+                        <div class="badge-display" id="streakBadge">
+                            <span class="badge-icon">🌱</span>
+                            <span class="badge-name">Beginner</span>
+                            <span class="badge-detail">Longest: <strong id="longestStreak">0</strong> days</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Habits Section -->
+            <section id="section-habits" class="section">
+                <div class="section-header">
+                    <h3>Daily Habit Tracker</h3>
+                    <div class="section-actions">
+                        <input type="date" id="habitDate" class="date-input">
+                        <button class="btn btn-primary" id="saveHabits">Save Progress</button>
+                    </div>
+                </div>
+                <div class="score-banner" id="habitScore">Daily Score: 0/100</div>
+                <div class="habits-grid" id="habitsGrid"></div>
+            </section>
+
+            <!-- Streaks Section -->
+            <section id="section-streaks" class="section">
+                <div class="streak-hero">
+                    <div class="streak-stat-large">
+                        <span class="streak-number" id="streakNumber">0</span>
+                        <span class="streak-label">Day Streak</span>
+                    </div>
+                    <div class="badge-display large" id="streakBadgeLarge"></div>
+                </div>
+                <div class="card">
+                    <h3>30-Day History</h3>
+                    <div class="streak-calendar" id="streakCalendar"></div>
+                </div>
+            </section>
+
+            <!-- Career Progress Section -->
+            <section id="section-career" class="section">
+                <div class="section-header">
+                    <h3>Career Progress</h3>
+                    <button class="btn btn-primary" id="saveCareer">Save Progress</button>
+                </div>
+                <div class="career-grid" id="careerGrid"></div>
+            </section>
+
+            <!-- Fear Challenges Section -->
+            <section id="section-fear" class="section">
+                <div class="section-header">
+                    <h3>Fear Challenge Tracker</h3>
+                </div>
+                <div class="fear-form card">
+                    <div class="form-row">
+                        <select id="fearType" class="select-input"></select>
+                        <input type="text" id="fearNotes" class="text-input" placeholder="Notes (optional)">
+                        <button class="btn btn-primary" id="addFear">Log Challenge</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Challenge History</h3>
+                    <div class="history-list" id="fearHistory"></div>
+                </div>
+            </section>
+
+            <!-- Weekly Review Section -->
+            <section id="section-weekly" class="section">
+                <div class="section-header">
+                    <h3>Weekly Review</h3>
+                    <button class="btn btn-primary" id="saveWeekly">Save Review</button>
+                </div>
+                <div class="review-grid">
+                    <div class="card"><label>Weekly Wins</label><textarea id="weeklyWins" rows="4" placeholder="What went well this week?"></textarea></div>
+                    <div class="card"><label>Weekly Mistakes</label><textarea id="weeklyMistakes" rows="4" placeholder="What didn't go as planned?"></textarea></div>
+                    <div class="card"><label>Lessons Learned</label><textarea id="weeklyLessons" rows="4" placeholder="Key takeaways from this week"></textarea></div>
+                    <div class="card"><label>Next Week Goals</label><textarea id="weeklyGoals" rows="4" placeholder="What will you focus on next week?"></textarea></div>
+                </div>
+            </section>
+
+            <!-- Monthly Goals Section -->
+            <section id="section-goals" class="section">
+                <div class="section-header">
+                    <h3>Career Monthly Planner</h3>
+                    <div class="section-actions">
+                        <button class="btn btn-outline" id="btnCreatePlan">+ Create New Month</button>
+                        <button class="btn btn-primary" id="saveGoals">Save Progress</button>
+                    </div>
+                </div>
+                <div class="goals-grid" id="goalsGrid"></div>
+            </section>
+
+            <!-- Mood Tracker Section -->
+            <section id="section-mood" class="section">
+                <div class="section-header">
+                    <h3>How are you feeling today?</h3>
+                </div>
+                <div class="mood-selector" id="moodSelector"></div>
+                <div class="charts-row">
+                    <div class="card chart-card">
+                        <h3>Mood Distribution</h3>
+                        <canvas id="moodChart"></canvas>
+                    </div>
+                    <div class="card chart-card">
+                        <h3>30-Day Mood Trend</h3>
+                        <canvas id="moodTrendChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="section-analytics" class="section">
+                <div class="charts-grid">
+                    <div class="card chart-card">
+                        <h3>Habit Completion Rate (7 Days)</h3>
+                        <canvas id="habitChart"></canvas>
+                    </div>
+                    <div class="card chart-card">
+                        <h3>Weekly Consistency</h3>
+                        <canvas id="consistencyChart"></canvas>
+                    </div>
+                    <div class="card chart-card">
+                        <h3>Monthly Progress</h3>
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                    <div class="card chart-card">
+                        <h3>Technical Skill Growth</h3>
+                        <canvas id="technicalChart"></canvas>
+                    </div>
+                    <div class="card chart-card">
+                        <h3>Communication Skill Growth</h3>
+                        <canvas id="communicationChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 30-Day Plan Section -->
+            <section id="section-plan" class="section">
+                <div class="plan-header card">
+                    <div class="plan-progress-info">
+                        <h3>30-Day Career Transformation Plan</h3>
+                        <p>Follow this structured roadmap to improve Python, SQL, aptitude, communication, and interview confidence.</p>
+                    </div>
+                    <div class="plan-progress-ring">
+                        <span id="planPercentage">0%</span>
+                        <small>Complete</small>
+                    </div>
+                </div>
+                <div class="plan-grid" id="planGrid"></div>
+            </section>
+        </div>
+    </main>
+</div>
+<!-- Modals for Custom Monthly Goal Planner -->
+<div class="modal" id="modalCreatePlan">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4>Create New Month Plan</h4>
+            <button class="modal-close" id="btnCloseCreatePlan">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="newPlanName">Month Name</label>
+                <input type="text" id="newPlanName" placeholder="e.g. Month 2">
+            </div>
+            <button class="btn btn-primary btn-full" id="submitCreatePlan">Create Month</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modalAddGoal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4>Add New Goal</h4>
+            <button class="modal-close" id="btnCloseAddGoal">✕</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="addGoalPlanId">
+            <div class="form-group">
+                <label for="newGoalName">Goal Description</label>
+                <input type="text" id="newGoalName" placeholder="e.g. React Learning">
+            </div>
+            <button class="btn btn-primary btn-full" id="submitAddGoal">Add Goal</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modalEditGoal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4>Edit Goal</h4>
+            <button class="modal-close" id="btnCloseEditGoal">✕</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editGoalId">
+            <div class="form-group">
+                <label for="editGoalName">Goal Description</label>
+                <input type="text" id="editGoalName">
+            </div>
+            <button class="btn btn-primary btn-full" id="submitEditGoal">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

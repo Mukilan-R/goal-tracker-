@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Career Growth & Habit Tracking System{% endblock %}
+{% block body_class %}landing-page{% endblock %}
+
+{% block content %}
+<div class="landing">
+    <nav class="landing-nav">
+        <div class="logo">
+            <span class="logo-icon">🚀</span>
+            <span>CareerTracker</span>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-ghost">Login</a>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-badge">For IT Students & Fresh Graduates</span>
+            <h1>Track Habits. Build Skills.<br><span class="gradient-text">Land Your Dream Job.</span></h1>
+            <p>A comprehensive career development platform to track daily learning, build productive habits, overcome fears, and monitor your IT career preparation progress.</p>
+            <div class="hero-actions">
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Start Free Today</a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline btn-lg">Sign In</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-card">
+                <div class="hero-stat"><span class="stat-value">87%</span><span class="stat-label">Daily Score</span></div>
+                <div class="hero-stat"><span class="stat-value">14</span><span class="stat-label">Day Streak</span></div>
+                <div class="hero-stat"><span class="stat-value">6/6</span><span class="stat-label">Skills</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Smart Dashboard</h3>
+            <p>Track daily scores, streaks, and overall career progress at a glance.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">✅</div>
+            <h3>Habit Tracker</h3>
+            <p>Build consistency with Python, SQL, aptitude, and interview prep habits.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔥</div>
+            <h3>Streak System</h3>
+            <p>Earn badges and maintain momentum with consecutive day tracking.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">💪</div>
+            <h3>Fear Challenges</h3>
+            <p>Face your fears by tracking public speaking and interview activities.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📈</div>
+            <h3>Analytics</h3>
+            <p>Visualize your growth with charts for habits, skills, and mood.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🗓️</div>
+            <h3>30-Day Plan</h3>
+            <p>Follow a structured roadmap to transform your career in 30 days.</p>
+        </div>
+    </section>
+
+    <footer class="landing-footer">
+        <p>&copy; 2026 Career Growth & Habit Tracking System. Built for aspiring IT professionals.</p>
+    </footer>
+</div>
+{% endblock %}
